@@ -9,7 +9,7 @@
       </p>
       <el-button>el-button</el-button>
     </div>
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
 
@@ -20,6 +20,24 @@ export default {
   name: 'app',
   components: {
     HelloWorld
+  },
+  data() {
+    return {
+      customers: []
+    }
+  },
+  created() {
+    this.fetchItem()
+  },
+  methods: {
+    fetchItem() {
+      let that = this
+      this.axios.get("/api/item/selectAll")
+        .then(function (res) {
+          console.log(res.data)
+          that.customers = res.data
+        })
+    }
   }
 }
 </script>
