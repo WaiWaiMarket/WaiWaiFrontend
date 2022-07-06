@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <h1>示例：前后端交互</h1>
+    
     <el-table :data="itemList" stripe style="width: 100%">
       <el-table-column prop="name" label="商品名称" width="180">
       </el-table-column>
