@@ -1,6 +1,6 @@
 <template>
 
-    <el-menu text-color="#2d2d2d" id="navid" class="nav" mode="horizontal" @select="handleSelect" router>
+    <el-menu text-color="#2d2d2d" id="navid" class="nav" mode="horizontal"  router>
         <el-menu-item class="logo" index="0" route="/">
             <img class="logoimg" src="@/assets/waiwailogo.png" height="56px" alt="logo">
         </el-menu-item>
@@ -20,12 +20,15 @@
 </template>
 
 <script>
+import request from '@/utils/request';
+
 export default {
     data() {
         return {
             navItems: [
                 { name: "首页", indexPath: "/", index: "1" },
-                { name: "关于", indexPath: "/about", index: "2" }
+                { name: "关于", indexPath: "/about", index: "2" },
+                { name: "用户信息", indexPath: "/userinfo", index: "3"},
             ],
             screenWidth: document.body.clientWidth,
         };
