@@ -16,8 +16,8 @@
                 <el-row>
                     <el-col :span="6" v-for="(item) in data1" :key="item.goodsid" :offset="3">
                         <el-card :body-style="{ padding: '0px' }" style="padding-right: 0;">
-                            <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                                class="image" width="40%">
+                            <img :src="urlimg + item.goodsimg"
+                                class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
                                 <div class="bottom clearfix">
@@ -71,6 +71,7 @@ export default {
     name: 'GoodsView',
     data() {
         return {
+            urlimg: 'http://localhost:9002/',
             data1: [], //所有商品
             dataSearch: [], //用来保存搜索的全部结果
             search: "",

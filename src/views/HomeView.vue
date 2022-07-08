@@ -9,13 +9,13 @@
                     </el-carousel-item>
                 </el-carousel>
             </el-col>
-            <!-- 热门精品 -->
+            <!-- 最新商品 -->
             <el-col :span="20" :offset="2" style="padding-top:30px;">
-                <h2>热门精品</h2>
+                <h2>最新商品</h2>
                 <el-row>
                     <el-col :span="5" v-for="(item, index) in data1" :key="item.goodsid" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                            <img :src="urlimg + item.goodsimg"
                                 class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
@@ -36,7 +36,7 @@
                 <el-row>
                     <el-col :span="5" v-for="(item, index) in data2" :key="item.goodsid" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                            <img :src="urlimg + item.goodsimg"
                                 class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
@@ -85,6 +85,7 @@ export default {
     name: 'HomeView',
     data() {
         return {
+            urlimg: 'http://localhost:9002/',
             itemList: {
                 img1: require("@/assets/school1.jpg"),
                 img2: require("@/assets/school2.jpg"),
@@ -114,15 +115,15 @@ export default {
 
     },
     mounted() {
-        request.get("/api/good/select/new?num=2")
+        request.get("/api/good/select/new?num=4")
             .then(res => {
                 console.log(res);
                 this.data1 = res.data;
             })
-        request.get("/api/good/selectAllByPage?pageNum=1&pageSize=4")
+        request.get("/api/good/select/price?num=4")
             .then(res => {
                 console.log(res);
-                this.data2 = res.data.records;
+                this.data2 = res.data;
             })
     },
     methods: {
@@ -130,6 +131,7 @@ export default {
             this.centerDialogVisible = true;
             this.goodsInfoId = goodsId;
             let self = this;
+            console.log(goodsId)
             request.get("/api/good/select/goodsid?id=" + goodsId)
                 .then(res => {
                     console.log(res);

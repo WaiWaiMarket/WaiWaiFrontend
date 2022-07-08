@@ -11,7 +11,7 @@
                     <div style="width: 60%;margin-left: 20%" class="app-container">
                         <template>
                             <el-form label-position="top" label-width="10px" :model="submitGoodsForm" :rules="rules"
-                                ref="formLabelAlign">
+                                ref="submitGoodsForm" >
                                 <el-col :span="9" :offset="2" style="margin-top: 50px;">
                                     <el-form-item label="商品名称" prop="goodsname">
                                         <el-input v-model="submitGoodsForm.goodsname" maxlength="25" show-word-limit>
@@ -24,8 +24,8 @@
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="9" :offset="2" style="margin-top: 20px;">
-                                    <el-form-item label="商品新旧程度 %" prop="goodsLevel">
-                                        <el-input v-model="submitGoodsForm.goodsLevel"></el-input>
+                                    <el-form-item label="商品新旧程度 %" prop="goodslevel">
+                                        <el-input v-model="submitGoodsForm.goodslevel"></el-input>
                                     </el-form-item>
                                 </el-col>
 
@@ -47,8 +47,8 @@
                     <el-row>
                         <el-col :span="10">
                             <h2>封面图片</h2>
-                            <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
-                                :data="goodsid" :show-file-list="false" :on-success="handleAvatarSuccess"
+                            <el-upload class="avatar-uploader" action="/api/img/upload" :data={id:goodsid}
+                                :show-file-list="false" :on-success="handleAvatarSuccess"
                                 :before-upload="beforeAvatarUpload">
                                 <img v-if="imageUrl" :src="imageUrl" class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -56,7 +56,7 @@
                         </el-col>
                         <el-col :span="10">
                             <h2>其他补充图片上传</h2>
-                            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/"
+                            <el-upload class="upload-demo" action="/api/img/upload" :data={id:goodsid}
                                 :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList"
                                 list-type="picture">
                                 <el-button size="small" type="primary">点击上传</el-button>
@@ -80,41 +80,41 @@
  
  
 <script>
+
+import request from '@/utils/request';
+import _ from 'lodash'
+
 export default {
     data() {
         return {
+            geturl: '',
+            goodsimg: '',
+            goodsid: '',
             dialogVisible: false,//弹出层
-            fileList: [
-                {
-                    name: 'food.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                },
-                {
-                    name: 'food2.jpeg',
-                    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-                }
-            ],
+            fileList: [],
             imageUrl: '',
             active: 0,//步骤条初始化
             rules: {
-                oldpwd: [
-                    { required: true, message: '请输入原密码', trigger: 'blur' },
+                goodsname: [
+                    { required: true, message: '请输入商品名称', trigger: 'blur' },
                 ],
-                newpwd: [
-                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                goodsprice: [
+                    { required: true, message: '请输入商品价格', trigger: 'blur' },
                 ],
-                confirmpwd: [
-                    { required: true, message: '请再次输入密码', trigger: 'blur' },
+                goodsLevel: [
+                    { required: true, message: '请输入商品新旧程度', trigger: 'blur' },
+                ],
+                goodsdesc: [
+                    { required: true, message: '请输入商品描述', trigger: 'blur' },
                 ],
             },
             submitGoodsForm: {
-                stuid: '',
-                userpwd: '',
-                username: '',
-                usersex: 1,
-                useremail: '',
-                userstatus: '',
-                usertel: '',
+                categoryid: '1',
+                goodsname: '',
+                goodsprice: '',
+                goodslevel: '',
+                goodsdesc: '',
+                goodsstatus: '1',
                 userid: '',
             },
         };
@@ -123,7 +123,34 @@ export default {
     methods: {
         //下一页
         next() {
-            if (this.active++ > 3) this.active = 0;
+            this.$refs['submitGoodsForm'].validate((valid) => {
+                if (valid) {
+                    this.submitGoodsForm.goodsprice*=100
+                    this.submitGoodsForm.userid = window.sessionStorage.getItem("user")
+                    console.log(this.submitGoodsForm)
+                    request.post("/api/good/insert", this.submitGoodsForm).then(res => {
+                        console.log(res);
+                        if (res.state == '0') {
+                            this.$message({
+                                type: "success",
+                                message: "基本信息保存成功"
+                            })
+                            this.goodsid = res.data
+                            console.log(this.goodsid)
+                            if (this.active++ > 3) this.active = 0;
+                        }
+                        else {
+                            this.$message({
+                                type: "error",
+                                message: res.msg
+                            })
+                        }
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
         },
         //上一页
         prev() {
@@ -149,9 +176,39 @@ export default {
         },
         handlePreview(file) {
             console.log(file);
-        }
-
-    }
+        },
+        
+        async finish() {
+            this.geturl = '/api/img/all?id=' + this.goodsid;
+            this.goodsimg = '';
+            console.log(this.geturl)
+            //this.getimgurl(this.geturl);
+            await request.get(this.geturl).then(res => {
+                console.log(res.data);
+                this.goodsimg = res.data[0].imgurl
+            })
+            //good/insertImg
+            var goodsid = this.goodsid
+            var goodsimg = this.goodsimg
+            var goodImgInsert = {goodsid,goodsimg}
+            console.log(goodImgInsert)
+            await request.post('/api/good/insertImg',goodImgInsert).then(res => {
+                console.log(res);
+                if (res.state == '0') {
+                    this.$message({
+                        type: "success",
+                        message: "商品上架成功"
+                    })
+                    this.$router.push("/about");
+                } else {
+                    this.$message({
+                        type: "error",
+                        message: res.msg
+                    })
+                }
+            })
+        },
+    },
 }
 </script>
 
