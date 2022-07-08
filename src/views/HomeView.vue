@@ -13,15 +13,14 @@
             <el-col :span="20" :offset="2" style="padding-top:30px;">
                 <h2>最新商品</h2>
                 <el-row>
-                    <el-col :span="5" v-for="(item, index) in data1" :key="item.goodsid" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="5" v-for="(item, index) in data1" :key="item.goosid" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img :src="urlimg + item.goodsimg"
-                                class="image" width="30%">
+                            <img :src="urlimg + item.goodsimg" class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
                                 <div class="bottom clearfix">
                                     <span class="info-title">{{ item.goodsdesc }}</span>
-                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goodsid)">
+                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goosid)">
                                         查看详情</el-button>
                                 </div>
                             </div>
@@ -34,15 +33,14 @@
             <el-col :span="20" :offset="2" style="padding-top:30px;">
                 <h2>低价好物</h2>
                 <el-row>
-                    <el-col :span="5" v-for="(item, index) in data2" :key="item.goodsid" :offset="index > 0 ? 1 : 0">
+                    <el-col :span="5" v-for="(item, index) in data2" :key="item.goosid" :offset="index > 0 ? 1 : 0">
                         <el-card :body-style="{ padding: '0px' }">
-                            <img :src="urlimg + item.goodsimg"
-                                class="image" width="30%">
+                            <img :src="urlimg + item.goodsimg" class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
                                 <div class="bottom clearfix">
                                     <span class="info-title">{{ item.goodsdesc }}</span>
-                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goodsid)">
+                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goosid)">
                                         查看详情</el-button>
                                 </div>
                             </div>
@@ -55,17 +53,16 @@
             <el-col :span="20" :offset="2" style="padding-top:30px;">
                 <el-dialog :title="goodsInfoName" :visible.sync="centerDialogVisible" width="418px" center>
                     <div style="text-align: center">
-                        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                                class="image" width="365px" height="300px">
-                        <!--  商品图片源于淘宝，淘宝采用418 * 418 的商品预览图-->
-                        <!--<el-carousel direction="horizontal" :autoplay="true">
-                            <el-carousel-item v-for="(v, k) in goodsInfoImg" :key="k"
+                        <!--<img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                            class="image" width="365px" height="300px">-->
+                        <el-carousel direction="horizontal" :autoplay="true">
+                            <el-carousel-item v-for="item in goodsInfoImg" :key="item.imgid"
                                 style="width: 365px;height: 300px;">
-                                <img :src="v" alt="请检查网络连接" width="93%">
+                                <img :src="urlimg + item.imgurl" alt="请检查网络连接" width="93%">
                             </el-carousel-item>
-                        </el-carousel> -->
+                        </el-carousel> 
                         <h2><img src="@/assets/yuan.png" alt="￥" width="30px">:
-                        {{parseInt(goodsInfoPrice)/100}}</h2>
+                            {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
                         <span slot="footer" class="dialog-footer">
                             <el-button type="primary" style="margin-top: 30px;">加入购物车</el-button>
@@ -132,24 +129,22 @@ export default {
             this.goodsInfoId = goodsId;
             let self = this;
             console.log(goodsId)
-            request.get("/api/good/select/goodsid?id=" + goodsId)
-                .then(res => {
-                    console.log(res);
-                    var data = res.data
-                    console.log(data)
-                    self.goodsInfoName = data.goodsname;
-                    self.goodsInfoPrice = data.goodsprice;
-                    self.goodsInfoDscrip = data.goodsdesc;
-                })
-            // 需要补充获取图片的方式
-            /*$.get("http://localhost:8083/goods/getGoodsById.do", jsonObj, function (data) {
-                self.goodsInfoName = data.name;
-                self.goodsInfoPrice = data.price;
-                self.goodsInfoDscrip = data.dscrip;
-                $.get("http://localhost:8083/goods/getGoodsImgMap.do", jsonObj, function (data) {
-                    self.goodsInfoImg = data;
-                }, "json");
-            }, "json");*/
+            request.get("/api/good/select/goodsid?goodsid=" + goodsId).then(res => {
+                console.log(res);
+                var data = res.data
+                console.log(data)
+                self.goodsInfoName = data.goodsname;
+                self.goodsInfoPrice = data.goodsprice;
+                self.goodsInfoDscrip = data.goodsdesc;
+            })
+
+            request.get("/api/img/all?id=" + goodsId).then(res => {
+                console.log(res);
+                self.goodsInfoImg = res.data
+                console.log(self.goodsInfoImg );
+            })
+
+            
         },
     },
 }

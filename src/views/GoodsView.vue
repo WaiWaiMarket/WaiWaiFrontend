@@ -41,15 +41,14 @@
             <el-col :span="20" :offset="0" style="padding-top:30px;">
                 <el-dialog :title="goodsInfoName" :visible.sync="centerDialogVisible" width="418px" center>
                     <div style="text-align: center">
-                        <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                            class="image" width="365px" height="300px">
-                        <!--  商品图片源于淘宝，淘宝采用418 * 418 的商品预览图-->
-                        <!--<el-carousel direction="horizontal" :autoplay="true">
-                            <el-carousel-item v-for="(v, k) in goodsInfoImg" :key="k"
+                        <!--<img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
+                            class="image" width="365px" height="300px">-->
+                        <el-carousel direction="horizontal" :autoplay="true">
+                            <el-carousel-item v-for="item in goodsInfoImg" :key="item.imgid"
                                 style="width: 365px;height: 300px;">
-                                <img :src="v" alt="请检查网络连接" width="93%">
+                                <img :src="urlimg + item.imgurl" alt="请检查网络连接" width="93%">
                             </el-carousel-item>
-                        </el-carousel> -->
+                        </el-carousel> 
                         <h2><img src="@/assets/yuan.png" alt="￥" width="30px">:
                             {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
@@ -116,7 +115,7 @@ export default {
             this.centerDialogVisible = true;
             this.goodsInfoId = goodsId;
             let self = this;
-            request.get("/api/good/select/goodsid?id=" + goodsId)
+            request.get("/api/good/select/goodsid?goodsid=" + goodsId)
                 .then(res => {
                     console.log(res);
                     var data = res.data
@@ -125,15 +124,11 @@ export default {
                     self.goodsInfoPrice = data.goodsprice;
                     self.goodsInfoDscrip = data.goodsdesc;
                 })
-            // 需要补充获取图片的方式
-            /*$.get("http://localhost:8083/goods/getGoodsById.do", jsonObj, function (data) {
-                self.goodsInfoName = data.name;
-                self.goodsInfoPrice = data.price;
-                self.goodsInfoDscrip = data.dscrip;
-                $.get("http://localhost:8083/goods/getGoodsImgMap.do", jsonObj, function (data) {
-                    self.goodsInfoImg = data;
-                }, "json");
-            }, "json");*/
+            request.get("/api/img/all?id=" + goodsId).then(res => {
+                console.log(res);
+                self.goodsInfoImg = res.data
+                console.log(self.goodsInfoImg );
+            })
         },
         handleSizeChange(pageSize) {//改变当前页面个数
             this.pageSize = pageSize;
