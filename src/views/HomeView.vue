@@ -91,7 +91,7 @@ export default {
                 img3: require("@/assets/school3.jpg"),
                 img4: require("@/assets/school4.jpg")
             },
-            data1: [], //热门精品
+            data1: [], //最新发布
             data2: [], //低价好物
             dataSearch: [], //用来保存搜索的全部结果
             goodsInfoId: "",
@@ -114,10 +114,10 @@ export default {
 
     },
     mounted() {
-        request.get("/api/good/selectAllByPage?pageNum=1&pageSize=4")
+        request.get("/api/good/select/new?num=2")
             .then(res => {
                 console.log(res);
-                this.data1 = res.data.records;
+                this.data1 = res.data;
             })
         request.get("/api/good/selectAllByPage?pageNum=1&pageSize=4")
             .then(res => {

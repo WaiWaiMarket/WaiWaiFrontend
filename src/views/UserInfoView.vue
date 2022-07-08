@@ -290,7 +290,12 @@ export default {
 		updateUserPwd() {
 			this.centerDialogVisible = true;
 			console.log('hahaha');
-			request.post("/api/user/UserpwdUpdate", this.formPwd).then(res => {
+			var retPwd = {}
+			retPwd.userid = this.formLabelAlign.userid;
+			retPwd.userpwd = this.formPwd.oldpwd;
+			retPwd.newpwd = this.formPwd.newpwd;
+			console.log(retPwd)
+			request.post("/api/user/UserpwdUpdate", retPwd).then(res => {
 				console.log(res);
 				if (res.state == '0') {
 					this.$message({
