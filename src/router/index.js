@@ -28,6 +28,30 @@ const routes = [
     name: 'register',
     component:  RegisterView
    },
+   {
+    path: '/goodsview',
+    name: 'goodsview',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/GoodsView.vue')
+  },
+  {
+    path: '/wantview',
+    name: 'wantview',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/WantView.vue')
+  },
+  {
+    path: '/sellgoods',
+    name: 'sellgoods',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/SellGoodsView.vue')
+  },
   {
     path: '/about',
     name: 'about',

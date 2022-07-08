@@ -27,8 +27,11 @@ export default {
         return {
             navItems: [
                 { name: "首页", indexPath: "/", index: "1" },
-                { name: "关于", indexPath: "/about", index: "2" },
+                { name: "商品浏览", indexPath: "/goodsview", index: "2" },
                 { name: "用户信息", indexPath: "/userinfo", index: "3"},
+                { name: "我想要", indexPath: "/wantview", index: "4"},
+                { name: "闲置物品出售", indexPath: "/sellgoods", index: "5"},
+                { name: "关于", indexPath: "/about", index: "6" },
             ],
             screenWidth: document.body.clientWidth,
         };

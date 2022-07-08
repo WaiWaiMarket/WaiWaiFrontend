@@ -1,15 +1,8 @@
 <template>
   <div id="app">
-    <h1>示例：前后端交互</h1>
-    
-    <el-table :data="itemList" stripe style="width: 100%">
-      <el-table-column prop="goodsid" label="商品id" width="180">
-      </el-table-column>
-      <el-table-column prop="goodsname" label="商品名称" width="180">
-      </el-table-column>
-      <el-table-column prop="goodsprice" label="商品价格">
-      </el-table-column>
-    </el-table>
+    <h1>关于我们</h1>
+    <span>
+    </span>
   </div>
 </template>
 
