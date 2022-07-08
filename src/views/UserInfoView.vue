@@ -101,7 +101,7 @@
                     </div>
                 </template>
             </el-table-column>-->
-							<el-table-column prop="goodslevel" label="商品程度">
+							<el-table-column prop="goodslevel" label="商品新旧程度">
 							</el-table-column>
 							<el-table-column prop="goodsdate" label="发布时间">
 							</el-table-column>
@@ -141,13 +141,13 @@
 							</el-button>
 						</div>
 						<el-table :data="orderData" border stripe style="width: 100%">
-							<el-table-column prop="goodsname" label="商品名称">
+							<el-table-column prop="goodsid" label="商品编号">
 							</el-table-column>
-							<el-table-column prop="username" label="卖家姓名">
+							<el-table-column prop="orderid" label="订单编号">
 							</el-table-column>
-							<el-table-column prop="goodsprice" label="商品价格">
+							<el-table-column prop="goodname" label="商品名">
 							</el-table-column>
-							<el-table-column prop="goodsdesc" label="商品描述">
+							<el-table-column prop="goodprice" label="商品价格">
 							</el-table-column>
 							<!--<el-table-column label="商品图片">
                 <template #default="scope">
@@ -158,9 +158,9 @@
                     </div>
                 </template>
             </el-table-column>-->
-							<el-table-column prop="goodslevel" label="商品程度">
+							<el-table-column prop="orderstatus" label="订单状态">
 							</el-table-column>
-							<el-table-column prop="goodsdate" label="发布时间">
+							<el-table-column prop="orderdate" label="订单时间">
 							</el-table-column>
 
 							<el-table-column fixed="right" label="操作">
@@ -219,6 +219,8 @@ export default {
 			},
 			dialogValue: '',
 			centerDialogVisible: false,
+			orderData:[],
+			selldata:[],
 		}
 	},
 	mounted() {
@@ -247,7 +249,17 @@ export default {
 					else
 						this.formLabelAlign.userstatus = "永久封禁"
 					console.log(this.formLabelAlign);
-				})
+				}),
+			request.get("/api/order/select/userIdPage?pageNum=1&pageSize=5&userId="+userId)
+			.then(res => {
+				console.log(res)
+				this.orderData=res.data.records;
+			}),
+			request.get("/api/user/UserGoodsSelect?pageNum=1&pageSize=5&userid="+userId)
+			.then(res => {
+				console.log(res)
+				this.selldata=res.data.records;
+			})
 		},
 		clickButton() {
 			this.centerDialogVisible = true;

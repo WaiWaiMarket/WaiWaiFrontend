@@ -14,8 +14,6 @@
             <el-table :data="tableData" border stripe style="width: 100%">
                 <el-table-column prop="goodsname" label="商品名称">
                 </el-table-column>
-                <el-table-column prop="userid" label="卖家id">
-                </el-table-column>
                 <el-table-column prop="goodsprice" label="商品价格">
                 </el-table-column>
                 <el-table-column prop="goodsdesc" label="商品描述">
@@ -86,14 +84,9 @@ export default {
     },
     methods: {
         load() {
-            request.get("/api/good/selectAllByPage", {
-                params: {
-                    pageNum: this.currentPage4,
-                    pageSize: this.pageSize,
-                    search: this.search,
-                }
-            }).then(res => {
-                console.log(this.search)
+			var userId = window.sessionStorage.getItem("user")
+            request.get("/api/user/UserGoodsSelect?pageNum=1&pageSize=5&userid=1"
+            ).then(res => {
                 console.log(res);
                 this.tableData = res.data.records;
                 this.total = res.data.total;
