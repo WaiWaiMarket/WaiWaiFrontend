@@ -65,7 +65,7 @@
                             {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" style="margin-top: 30px;">加入购物车</el-button>
+                            <el-button type="primary" style="margin-top: 30px;">加入我想要</el-button>
                         </span>
                     </div>
                 </el-dialog>

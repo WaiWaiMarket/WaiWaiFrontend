@@ -3,6 +3,9 @@
     <h1>关于我们</h1>
     <span>
     </span>
+    <img src="@/assets/backend.png" width="64%" height="36%">
+    <img src="@/assets/frontend.png" width="64%" height="36%">
+
   </div>
 </template>
 
