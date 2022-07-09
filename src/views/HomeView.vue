@@ -82,7 +82,7 @@ export default {
     name: 'HomeView',
     data() {
         return {
-            urlimg: 'http://localhost:9002/',
+            urlimg: 'http://localhost:9002/upload/',
             itemList: {
                 img1: require("@/assets/school1.jpg"),
                 img2: require("@/assets/school2.jpg"),

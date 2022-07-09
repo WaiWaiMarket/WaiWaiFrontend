@@ -102,7 +102,7 @@ export default {
         addOrder(id){
             console.log(id);
             var userId = window.sessionStorage.getItem("user")
-            request.get("/api/order/userinsert?goodsid=" + id + "&userid=" + userId).then(res => {
+            request.get("/api/order/create?goodsid=" + id + "&buyid=" + userId).then(res => {
                 console.log(res)
                 if (res.state == '0') {
                     this.$message({

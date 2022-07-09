@@ -70,7 +70,7 @@ export default {
     name: 'GoodsView',
     data() {
         return {
-            urlimg: 'http://localhost:9002/',
+            urlimg: 'http://localhost:9002/upload/',
             data1: [], //所有商品
             dataSearch: [], //用来保存搜索的全部结果
             search: "",
@@ -141,8 +141,7 @@ export default {
         addWant() {
             var goodsId = this.goodsInfoId;
             var userId = window.sessionStorage.getItem("user");
-            var wantret = { userId, goodsId }
-            request.post("/api/want/insert", wantret).then(res => {
+            request.get("/api/want/insert?goodsid=" + goodsId +"&userid="+userId).then(res => {
                 console.log(res);
                 if (res.state == '0') {
                     this.$message({
