@@ -199,7 +199,7 @@ export default {
                         type: "success",
                         message: "商品上架成功"
                     })
-                    this.$router.push("/about");
+                    this.$router.push("/userinfo");
                 } else {
                     this.$message({
                         type: "error",

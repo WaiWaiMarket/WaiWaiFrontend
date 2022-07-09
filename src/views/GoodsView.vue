@@ -53,7 +53,7 @@
                             {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" style="margin-top: 30px;">加入我想要</el-button>
+                            <el-button type="primary" style="margin-top: 30px;" @click="addWant()">加入我想要</el-button>
                         </span>
                     </div>
                 </el-dialog>
@@ -137,6 +137,27 @@ export default {
         handleCurrentChange(pageNum) {//改变当前页码
             this.currentPage = pageNum;
             this.load();
+        },
+        addWant() {
+            var goodsId = this.goodsInfoId;
+            var userId = window.sessionStorage.getItem("user");
+            var wantret = { userId, goodsId }
+            request.post("/api/want/insert", wantret).then(res => {
+                console.log(res);
+                if (res.state == '0') {
+                    this.$message({
+                        type: "success",
+                        message: "加入我想要成功"
+                    })
+                    this.$router.push("/wantview");
+                }
+                else {
+                    this.$message({
+                        type: "error",
+                        message: res.msg
+                    })
+                }
+            })
         },
     },
 }

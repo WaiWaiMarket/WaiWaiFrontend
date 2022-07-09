@@ -77,30 +77,13 @@
 						<h2>我的闲置</h2>
 					</el-col>
 					<el-col :span="19">
-						<!--    搜索区域-->
-						<div style="margin: 10px 0">
-
-							<el-input v-model="search" placeholder="请输入关键字" style="width: 20%" clearable></el-input>
-							<el-button style="margin-left: 5px; background-color: #5defc1; color: white" @click="load"
-								plain>查询
-							</el-button>
-						</div>
 						<el-table :data="selldata" border stripe style="width: 100%">
 							<el-table-column prop="goodsname" label="商品名称">
 							</el-table-column>
-							<el-table-column prop="goodsprice" label="商品价格">
+							<el-table-column prop="goodsprice" :formatter="price1Format" label="商品价格">
 							</el-table-column>
 							<el-table-column prop="goodsdesc" label="商品描述">
 							</el-table-column>
-							<!--<el-table-column label="商品图片">
-                <template #default="scope">
-                    <div class="demo-image__preview">
-                        <el-image style="width: 100px; height: 100px" :src="scope.row.cover"
-                            :preview-src-list="[scope.row.cover]">
-                        </el-image>
-                    </div>
-                </template>
-            </el-table-column>-->
 							<el-table-column prop="goodslevel" label="商品新旧程度">
 							</el-table-column>
 							<el-table-column prop="goodsdate" label="发布时间">
@@ -117,9 +100,9 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-							:current-page="currentPage4" :page-sizes="[5, 10]" :page-size="pageSize"
-							layout="total, sizes, prev, pager, next, jumper" :total="total">
+						<el-pagination background @size-change="handleSizeChange1" @current-change="handleCurrentChange1"
+							:current-page="currentPage1" :page-sizes="[5, 10]" :page-size="pageSize1"
+							layout="total, sizes, prev, pager, next, jumper" :total="total1">
 						</el-pagination>
 					</el-col>
 				</el-row>
@@ -132,33 +115,16 @@
 						<h2>我的订单</h2>
 					</el-col>
 					<el-col :span="19">
-						<!--    搜索区域-->
-						<div style="margin: 10px 0">
-
-							<el-input v-model="search" placeholder="请输入关键字" style="width: 20%" clearable></el-input>
-							<el-button style="margin-left: 5px; background-color: #5defc1; color: white" @click="load"
-								plain>查询
-							</el-button>
-						</div>
 						<el-table :data="orderData" border stripe style="width: 100%">
-							<el-table-column prop="goodsid" label="商品编号">
+							<el-table-column prop="buyername" label="买家姓名">
 							</el-table-column>
-							<el-table-column prop="orderid" label="订单编号">
+							<el-table-column prop="sellername" label="卖家姓名">
 							</el-table-column>
-							<el-table-column prop="goodname" label="商品名">
+							<el-table-column prop="goodname" label="商品名称">
 							</el-table-column>
-							<el-table-column prop="goodprice" label="商品价格">
+							<el-table-column prop="goodprice" :formatter="price2Format" label="商品价格">
 							</el-table-column>
-							<!--<el-table-column label="商品图片">
-                <template #default="scope">
-                    <div class="demo-image__preview">
-                        <el-image style="width: 100px; height: 100px" :src="scope.row.cover"
-                            :preview-src-list="[scope.row.cover]">
-                        </el-image>
-                    </div>
-                </template>
-            </el-table-column>-->
-							<el-table-column prop="orderstatus" label="订单状态">
+							<el-table-column prop="orderstatus" :formatter="statusFormat" label="订单状态">
 							</el-table-column>
 							<el-table-column prop="orderdate" label="订单时间">
 							</el-table-column>
@@ -166,14 +132,14 @@
 							<el-table-column fixed="right" label="操作">
 								<template #default="scope">
 									<div style="display: flex; align-content: space-between">
-										<el-button @click="addOrder(scope.row)" type="primary">反馈</el-button>
+										<el-button @click="addfeedback(scope.row.orderid)" type="primary">反馈</el-button>
 									</div>
 								</template>
 							</el-table-column>
 						</el-table>
-						<el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-							:current-page="currentPage4" :page-sizes="[5, 10]" :page-size="pageSize"
-							layout="total, sizes, prev, pager, next, jumper" :total="total">
+						<el-pagination background @size-change="handleSizeChange2" @current-change="handleCurrentChange2"
+							:current-page="currentPage2" :page-sizes="[5, 10]" :page-size="pageSize2"
+							layout="total, sizes, prev, pager, next, jumper" :total="total2">
 						</el-pagination>
 					</el-col>
 				</el-row>
@@ -190,6 +156,14 @@ export default {
 	name: "user-info",
 	data() {
 		return {
+			search1: '',
+			search2: '',
+            currentPage1: 1,
+			currentPage2: 1,
+            pageSize1: 5,
+			pageSize2: 10,
+            total1: 0,
+			total2: 0,
 			rules: {
 				oldpwd: [
 					{ required: true, message: '请输入原密码', trigger: 'blur' },
@@ -225,8 +199,19 @@ export default {
 	},
 	mounted() {
 		this.load();
+		this.load1();
+		this.load2();
 	},
 	methods: {
+		price1Format(row) {
+			return parseInt(row.goodsprice /= 100);
+		},
+		price2Format(row) {
+			return parseInt(row.goodprice /= 100);
+		},
+		statusFormat(row) {
+			return row.orderstatus==0?"进行中":"已结束"
+		},
 		load() {
 			var userId = window.sessionStorage.getItem("user")
 			console.log(userId)
@@ -249,16 +234,34 @@ export default {
 					else
 						this.formLabelAlign.userstatus = "永久封禁"
 					console.log(this.formLabelAlign);
-				}),
-			request.get("/api/order/select/userIdPage?pageNum=1&pageSize=5&userId="+userId)
-			.then(res => {
-				console.log(res)
-				this.orderData=res.data.records;
-			}),
-			request.get("/api/user/UserGoodsSelect?pageNum=1&pageSize=5&userid="+userId)
+				})
+		},
+		load1() {
+			var userId = window.sessionStorage.getItem("user")
+			request.get("/api/user/UserGoodsSelect", {
+                params: {
+                    pageNum: this.currentPage1,
+                    pageSize: this.pageSize1,
+                    userid: userId,
+                }
+            })
 			.then(res => {
 				console.log(res)
 				this.selldata=res.data.records;
+			})
+		},
+		load2() {
+			var userId = window.sessionStorage.getItem("user")
+			request.get("/api/order/select/userIdPage", {
+                params: {
+                    pageNum: this.currentPage2,
+                    pageSize: this.pageSize2,
+                    userId: userId,
+                }
+            })
+			.then(res => {
+				console.log(res)
+				this.orderData=res.data.records;
 			})
 		},
 		clickButton() {
@@ -321,6 +324,42 @@ export default {
 					})
 				}
 				this.load();//刷新表格数据
+			});
+		},
+
+		handleSizeChange1(pageSize) {//改变当前页面个数
+            this.pageSize1 = pageSize;
+            this.load1();
+        },
+        handleCurrentChange1(pageNum) {//改变当前页码
+            this.currentPage1 = pageNum;
+            this.load1();
+        },
+		handleSizeChange2(pageSize) {//改变当前页面个数
+            this.pageSize2 = pageSize;
+            this.load2();
+        },
+        handleCurrentChange2(pageNum) {//改变当前页码
+            this.currentPage2 = pageNum;
+            this.load2();
+        },
+		sellDelete(goodsid){
+			console.log(goodsid);
+			///good/delete
+			request.get("/api/good/delete?goodsid="+goodsid).then(res => {
+				console.log(res);
+				if (res.state == '0') {
+					this.$message({
+						type: "success",
+						message: "删除闲置信息成功"
+					})
+				} else {
+					this.$message({
+						type: "error",
+						message: res.msg
+					})
+				}
+				this.load1();//刷新表格数据
 			});
 		},
 	}

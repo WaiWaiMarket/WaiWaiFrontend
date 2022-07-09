@@ -60,12 +60,12 @@
                                 style="width: 365px;height: 300px;">
                                 <img :src="urlimg + item.imgurl" alt="请检查网络连接" width="93%">
                             </el-carousel-item>
-                        </el-carousel> 
+                        </el-carousel>
                         <h2><img src="@/assets/yuan.png" alt="￥" width="30px">:
                             {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" style="margin-top: 30px;">加入我想要</el-button>
+                            <el-button type="primary" style="margin-top: 30px;" @click="addWant()">加入我想要</el-button>
                         </span>
                     </div>
                 </el-dialog>
@@ -141,10 +141,30 @@ export default {
             request.get("/api/img/all?id=" + goodsId).then(res => {
                 console.log(res);
                 self.goodsInfoImg = res.data
-                console.log(self.goodsInfoImg );
+                console.log(self.goodsInfoImg);
             })
 
-            
+
+        },
+        addWant() {
+            var goodsId = this.goodsInfoId;
+            var userId = window.sessionStorage.getItem("user");
+            request.get("/api/want/insert?goodsid=" + goodsId +"&userid="+userId).then(res => {
+                console.log(res);
+                if (res.state == '0') {
+                    this.$message({
+                        type: "success",
+                        message: "加入我想要成功"
+                    })
+                    this.$router.push("/wantview");
+                }
+                else {
+                    this.$message({
+                        type: "error",
+                        message: res.msg
+                    })
+                }
+            })
         },
     },
 }
