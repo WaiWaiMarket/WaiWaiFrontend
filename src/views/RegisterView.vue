@@ -74,10 +74,14 @@ export default {
           var registerPost = {}
           registerPost.stuid = this.form.stuid
           registerPost.username = this.form.username
-          registerPost.password = this.form.password
+          registerPost.userpwd = this.form.password
+          registerPost.usersex = 1
+          registerPost.useremail = "null"
+          registerPost.usertel = "0"
+          registerPost.userstatus = "0"
           request.post("/api/user/UserRegister", registerPost).then(res => {
             console.log(res);
-            if (res.code === '0') {
+            if (res.state == '0') {
               this.$message({
                 type: "success",
                 message: "注册成功"
