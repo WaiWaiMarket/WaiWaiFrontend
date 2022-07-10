@@ -1,56 +1,44 @@
 <template>
-    <div id="HomeView">
-        <el-row :gutter="24">
-            <!-- 滚动banner -->
-            <el-col :span="20" :offset="2">
-                <el-carousel :interval="3000" arrow="always">
-                    <el-carousel-item v-for="item in itemList" :key="item">
-                        <el-image class="bannerimage" :src=item fit="fill"></el-image>
-                    </el-carousel-item>
-                </el-carousel>
+    <div id="GoodsView">
+        <el-row :gutter="20">
+            <h2>二手商品浏览</h2>
+            <el-col :span="5" :offset="16">
+                <el-input placeholder="输入商品名、商品ID" v-model="search" clearable>
+                </el-input>
             </el-col>
-            <!-- 最新商品 -->
+            <el-col :span="2">
+                <el-button type="primary" icon="el-icon-search" @click="load">搜索</el-button>
+            </el-col>
+
+            <!-- 二手商品浏览 -->
             <el-col :span="20" :offset="2" style="padding-top:30px;">
-                <h2>最新商品</h2>
+                
                 <el-row>
-                    <el-col :span="5" v-for="(item, index) in data1" :key="item.goosid" :offset="index > 0 ? 1 : 0">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <img :src="urlimg + item.goodsimg" class="image" width="30%">
+                    <el-col :span="6" v-for="(item) in data1" :key="item.goodsid" :offset="3">
+                        <el-card :body-style="{ padding: '0px' }" style="padding-right: 0;">
+                            <img :src="urlimg + item.goodsimg"
+                                class="image" width="30%">
                             <div style="padding: 14px;">
                                 <span>{{ item.goodsname }}</span>
                                 <div class="bottom clearfix">
                                     <span class="info-title">{{ item.goodsdesc }}</span>
-                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goosid)">
+                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goodsid)">
                                         查看详情</el-button>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
-            </el-col>
-
-            <!-- 低价好物 -->
-            <el-col :span="20" :offset="2" style="padding-top:30px;">
-                <h2>低价好物</h2>
-                <el-row>
-                    <el-col :span="5" v-for="(item, index) in data2" :key="item.goosid" :offset="index > 0 ? 1 : 0">
-                        <el-card :body-style="{ padding: '0px' }">
-                            <img :src="urlimg + item.goodsimg" class="image" width="30%">
-                            <div style="padding: 14px;">
-                                <span>{{ item.goodsname }}</span>
-                                <div class="bottom clearfix">
-                                    <span class="info-title">{{ item.goodsdesc }}</span>
-                                    <el-button type="text" class="button" @click="clickGoodsInfoButton(item.goosid)">
-                                        查看详情</el-button>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
+                <el-row style="padding-top: 50px;">
+                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :current-page="currentPage" :page-sizes="[10]" :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper" :total="total">
+                    </el-pagination>
                 </el-row>
             </el-col>
 
             <!-- 单个商品的详情 -->
-            <el-col :span="20" :offset="2" style="padding-top:30px;">
+            <el-col :span="20" :offset="0" style="padding-top:30px;">
                 <el-dialog :title="goodsInfoName" :visible.sync="centerDialogVisible" width="418px" center>
                     <div style="text-align: center">
                         <!--<img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
@@ -60,7 +48,7 @@
                                 style="width: 365px;height: 300px;">
                                 <img :src="urlimg + item.imgurl" alt="请检查网络连接" width="93%">
                             </el-carousel-item>
-                        </el-carousel>
+                        </el-carousel> 
                         <h2><img src="@/assets/yuan.png" alt="￥" width="30px">:
                             {{ parseInt(goodsInfoPrice) / 100 }}</h2>
                         <p>{{ goodsInfoDscrip }}</p>
@@ -79,19 +67,13 @@
 import request from '@/utils/request';
 
 export default {
-    name: 'HomeView',
+    name: 'GoodsView',
     data() {
         return {
             urlimg: 'http://localhost:9002/upload/',
-            itemList: {
-                img1: require("@/assets/school1.jpg"),
-                img2: require("@/assets/school2.jpg"),
-                img3: require("@/assets/school3.jpg"),
-                img4: require("@/assets/school4.jpg")
-            },
-            data1: [], //最新发布
-            data2: [], //低价好物
+            data1: [], //所有商品
             dataSearch: [], //用来保存搜索的全部结果
+            search: "",
             goodsInfoId: "",
             goodsInfoImg: {},
             goodsInfoName: "",
@@ -102,7 +84,7 @@ export default {
             centerDialogVisible2: false,
             goToShopCar: true,
             currentPage: 1, //初始页
-            pageSize: 12, //每页的数据
+            pageSize: 10, //每页的数据
             paginationShow: false, //默认不显示分页
             searchFlag: false, //用来避免频繁向服务器发送数据
             fullscreenLoading: false, //模拟加载
@@ -112,39 +94,49 @@ export default {
 
     },
     mounted() {
-        request.get("/api/good/select/new?num=4")
-            .then(res => {
-                console.log(res);
-                this.data1 = res.data;
-            })
-        request.get("/api/good/select/price?num=4")
-            .then(res => {
-                console.log(res);
-                this.data2 = res.data;
-            })
+        this.load()
     },
     methods: {
+        load() {
+            request.get("/api/good/selectAllByPage", {
+                params: {
+                    pageNum: this.currentPage,
+                    pageSize: this.pageSize,
+                    search: this.search,
+                }
+            }).then(res => {
+                console.log(this.search)
+                console.log(res);
+                this.data1 = res.data.records;
+                this.total = res.data.total;
+            })
+        },
         clickGoodsInfoButton(goodsId) {
             this.centerDialogVisible = true;
             this.goodsInfoId = goodsId;
             let self = this;
-            console.log(goodsId)
-            request.get("/api/good/select/goodsid?goodsid=" + goodsId).then(res => {
-                console.log(res);
-                var data = res.data
-                console.log(data)
-                self.goodsInfoName = data.goodsname;
-                self.goodsInfoPrice = data.goodsprice;
-                self.goodsInfoDscrip = data.goodsdesc;
-            })
-
+            request.get("/api/good/select/goodsid?goodsid=" + goodsId)
+                .then(res => {
+                    console.log(res);
+                    var data = res.data
+                    console.log(data)
+                    self.goodsInfoName = data.goodsname;
+                    self.goodsInfoPrice = data.goodsprice;
+                    self.goodsInfoDscrip = data.goodsdesc;
+                })
             request.get("/api/img/all?id=" + goodsId).then(res => {
                 console.log(res);
                 self.goodsInfoImg = res.data
-                console.log(self.goodsInfoImg);
+                console.log(self.goodsInfoImg );
             })
-
-
+        },
+        handleSizeChange(pageSize) {//改变当前页面个数
+            this.pageSize = pageSize;
+            this.load();
+        },
+        handleCurrentChange(pageNum) {//改变当前页码
+            this.currentPage = pageNum;
+            this.load();
         },
         addWant() {
             var goodsId = this.goodsInfoId;

@@ -1,12 +1,32 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <el-container>
+      <el-header>
+        <NavMenuVue></NavMenuVue>
+      </el-header>
+      <el-main>
+        <router-view />
+      </el-main>
+      <el-footer>
+        <FooterInfoVue></FooterInfoVue>
+      </el-footer>
+    </el-container>
   </div>
 </template>
+
+<script>
+import NavMenuVue from './components/NavMenu.vue'
+import FooterInfoVue from './components/FooterInfo.vue'
+
+export default {
+  name: 'app',
+  components: {
+    NavMenuVue,
+    FooterInfoVue
+  }
+}
+</script>
+
 
 <style>
 #app {
